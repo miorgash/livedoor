@@ -1,2 +1,8 @@
 data/*
+log/*
+model/*
 .ipynb_checkpoints/*
+notebook/adhoc/.ipynb_checkpoints/*
+notebook/model/.ipynb_checkpoints/*
+notebook/preproc/.ipynb_checkpoints/*
+src/__pycache__/*
