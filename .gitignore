@@ -1,6 +1,7 @@
 data/*
 log/*
 model/*
+bin/*
 .ipynb_checkpoints/*
 notebook/adhoc/.ipynb_checkpoints/*
 notebook/model/.ipynb_checkpoints/*
