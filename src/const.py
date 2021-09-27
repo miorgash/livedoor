@@ -1,5 +1,6 @@
 import os
 import torch
+SEED = 123
 ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 DIR_BIN = os.path.join(ROOT, 'bin')
 DIR_DATA = os.path.join(ROOT, 'data')
