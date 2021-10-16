@@ -13,17 +13,15 @@ class SudachiTokenizer(Tokenizer):
 
 if __name__ == '__main__':
     tokenizer = SudachiTokenizer()
-
-    print('test: 文 -> Generator of トークン')
-    text = tokenizer.tokenized_text('国家公務員の叛逆')
-    for token in text:
-        print(token)
-    
-    print('test: Iterable of 文 -> Nested generator of トークン')
     corpus = [
         '国家公務員の叛逆',
         'ヴェニスの商人を返してくださいよ'
     ]
+    print('test: 文 -> Generator of トークン')
+    text = tokenizer.tokenized_text(corpus[0])
+    for token in text:
+        print(token)
+    print('test: Iterable of 文 -> Nested generator of トークン')
     for text in tokenizer.tokenized_corpus(corpus):
         for token in text:
             print(token)
