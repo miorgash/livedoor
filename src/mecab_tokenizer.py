@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/tmp/work/livedoor/src')
 import MeCab
 from tokenizer import Tokenizer
 from const import *

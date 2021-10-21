@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/tmp/work/livedoor/src')
 from sudachipy import tokenizer, dictionary
 from tokenizer import Tokenizer
 
