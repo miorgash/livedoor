@@ -7,7 +7,7 @@ from datetime import datetime
 from tqdm import tqdm
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
-from mecab_trial import tokenize
+from mecab_tokenizer_spark import tokenize
 
 if __name__ == '__main__':
     splits = ['train', 'test']
