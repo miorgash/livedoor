@@ -40,7 +40,8 @@ if __name__ == '__main__':
     dataset = dataset[dataset.index!=6031].reset_index(drop=True)
 
     # for prediction
-    dataset = dataset[['media', 'text']]
+    TEXT_COL = 'text'
+    dataset = dataset[['media', TEXT_COL]]
 
     # label を数値化
     itos = {i: s for i, s in enumerate(set(dataset['media']))}
@@ -53,7 +54,7 @@ if __name__ == '__main__':
     print(pd.DataFrame(dataset.media.value_counts()).sort_index().T)
 
     # output
-    f = os.path.join(ROOT, 'data', 'livedoor&text=text_.csv')
+    f = os.path.join(ROOT, 'data', f'livedoor&text={TEXT_COL}.csv')
     if not os.path.isfile(f):
         dataset.to_csv(f, index=False)
         print('file created')
