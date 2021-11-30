@@ -1,5 +1,4 @@
 # primitive
-import sys
 import os
 import pandas as pd
 
@@ -17,15 +16,22 @@ def get_lines(file_path):
         lines = [l.strip() for l in f.readlines()]
     return [l for l in lines if len(l) > 0]
 
-if __name__ == '__main__':
-    # dataset
-    p = '/data/livedoor/text/'
-    medium = [d for d in os.listdir(p) if os.path.isdir(os.path.join(p, d))]
+def create_table(input_dir: str, text_column: str) -> pd.DataFrame:
+    '''指定されたディレクトリ下のファイルからテーブルデータを作成する
+    Args:
+        input_dir (str): livedoornewscorpus 格納ディレクトリパス
+        text_column (str): テキストデータとして用いる列名
+    Returns:
+        9 メディアのいずれかを示すラベルとテキストの 2 列を持つテーブル
+    '''
+    # メディア一覧をディレクトリ名から取得
+    medium = [d for d in os.listdir(input_dir)
+                if os.path.isdir(os.path.join(input_dir, d))]
 
-    dataset = []
+    table = []
 
     for media in medium:
-        dir_path = os.path.join(p, media)
+        dir_path = os.path.join(input_dir, media)
         files = get_files(dir_path)
         
         for file in files:
@@ -34,29 +40,39 @@ if __name__ == '__main__':
             lines = get_lines(file_path)
             
             url, timestamp, title, text = lines[0], lines[1], lines[2], ''.join(lines[3:])
-            dataset.append((media, url, timestamp, title, text))
+            table.append((media, url, timestamp, title, text))
 
-    dataset = pd.DataFrame(dataset, columns=['media', 'url', 'timestamp', 'title', 'text'])
-    dataset = dataset[dataset.index!=6031].reset_index(drop=True)
+    table = pd.DataFrame(table, columns=['media', 'url', 'timestamp', 'title', 'text'])
+    table = table[table.index!=6031].reset_index(drop=True)
 
-    # for prediction
-    TEXT_COL = 'text'
-    dataset = dataset[['media', TEXT_COL]]
+    # 必要な列のみ残す
+    table = table[['media', text_column]]
 
     # label を数値化
-    itos = {i: s for i, s in enumerate(set(dataset['media']))}
+    itos = {i: s for i, s in enumerate(set(table['media']))}
     stoi = {s: i for i, s in itos.items()}
-    dataset.loc[:, 'media'] = dataset['media'].map(stoi)
+    table.loc[:, 'media'] = table['media'].map(stoi)
 
-    # 概観
-    print(dataset.shape)
-    print(dataset.head())
-    print(pd.DataFrame(dataset.media.value_counts()).sort_index().T)
+    return table
+
+if __name__ == '__main__':
+    '''main として実行時はファイルを出力する
+    '''
+    # Args
+    input_dir = '/data/livedoor/text/'
+    text_column = 'text'
+    output_file = os.path.join(ROOT, 'data', f'livedoor&text={text_column}.csv')
+
+    table = create_table(input_dir, text_column)
+
+    # 概観 todo: logging に変更
+    print(table.shape)
+    print(table.head())
+    print(pd.DataFrame(table.media.value_counts()).sort_index().T)
 
     # output
-    f = os.path.join(ROOT, 'data', f'livedoor&text={TEXT_COL}.csv')
-    if not os.path.isfile(f):
-        dataset.to_csv(f, index=False)
-        print('file created')
-    else:
+    if os.path.isfile(output_file):
         print('file exists')
+    else:
+        table.to_csv(output_file, index=False)
+        print('file created')
