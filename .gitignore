@@ -7,4 +7,5 @@ notebook/adhoc/.ipynb_checkpoints/*
 notebook/model/.ipynb_checkpoints/*
 notebook/preproc/.ipynb_checkpoints/*
 src/__pycache__/*
+src/preproc/__pycache__/*
 .DS_Store
