@@ -8,5 +8,8 @@
 	"shutdownAction": "stopCompose",
 	"settings": {
 		"python.envFile": "${workspaceFolder}/.env"
-	}
+	},
+	"extensions": [
+		"ms-python.python"
+	]
 }
