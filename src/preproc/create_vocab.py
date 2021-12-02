@@ -1,10 +1,12 @@
 import os
+import csv
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from collections import Counter
 from torchtext.vocab import Vocab
 from const import *
 import pickle5 as pickle
 import gensim
+from tqdm import tqdm
 
 def create_vocab(input_corpus, input_pretrained_vectors) -> Vocab:
     '''学習用コーパスと学習済み分散表現に含まれる語の Vocab を作成する。
@@ -14,10 +16,20 @@ def create_vocab(input_corpus, input_pretrained_vectors) -> Vocab:
     Returns:
         モデル構築用の語彙 (torchtext.vocab.Vocab)
     '''
-    # load
+    # Vocab
+    tokenizer = SudachiTokenizer()
+    with open(input_corpus, 'r') as f:
+        reader = csv.reader(f)
+        header = next(reader)
+         # instanse を処理するものだけつくって map 使えばよいのでは？
+        texts = map(lambda row: tokenizer.tokenized_text(row[1]), reader)
+        counter = Counter()
+        for text in tqdm(texts):
+            counter.update(text)
+        vocab = Vocab(counter)
+    
     vectors = gensim.models.KeyedVectors.load(input_pretrained_vectors)
-    # create
-    vocab = Vocab()
+    
     return vocab
 
 if __name__ == '__main__':
