@@ -1,7 +1,5 @@
-import sys
-sys.path.append('/tmp/work/livedoor/src')
 from sudachipy import tokenizer, dictionary
-from tokenizer import Tokenizer
+from tokenizer.tokenizer import Tokenizer
 
 class SudachiTokenizer(Tokenizer):
     def __init__(self):
