@@ -2,11 +2,6 @@ data/*
 log/*
 model/*
 bin/*
-.ipynb_checkpoints/*
-notebook/adhoc/.ipynb_checkpoints/*
-notebook/model/.ipynb_checkpoints/*
-notebook/preproc/.ipynb_checkpoints/*
-src/__pycache__/*
-src/preproc/__pycache__/*
-src/tokenizer/__pycache__/*
+*.ipynb_checkpoints
+*__pycache__
 .DS_Store
