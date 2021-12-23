@@ -10,7 +10,11 @@ from livedoor_dataset import LivedoorDataset
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from torch.nn.utils.rnn import pad_sequence
 
-def train(model: nn.Module, texts: Tuple, labels: torch.tensor, text_pipeline: Callable) -> nn.Module:
+def train(model: nn.Module, texts: Tuple, 
+          labels: torch.tensor, 
+          text_pipeline: Callable, 
+          loss_fn: Callable,
+          optimizer: Callable) -> nn.Module:
     """1 バッチの学習
     Args:
         batch (): 学習用データのバッチ
@@ -23,11 +27,15 @@ def train(model: nn.Module, texts: Tuple, labels: torch.tensor, text_pipeline: C
 
     # Feed forward
     labels, texts = labels.to(DEVICE), texts.to(DEVICE)
-    print(1)
+    pred = model(texts)[0]
 
     # Get loss
+    loss = loss_fn(pred, labels)
 
     # Get gradient
+    optimizer.zero_grad()
+    loss.backward()
+    print(1)
 
     # Back propagate
 
@@ -47,23 +55,27 @@ if __name__ == '__main__':
     dataframe = pd.read_csv(os.path.join(DIR_DATA, 'train.csv'))
 
     # Declare
+    BATCH_SIZE = 4
     H_DIM = 100
     CLASS_DIM = 9
+    LR = 1e-3
     dataloader = DataLoader(
         LivedoorDataset(dataframe), 
-        batch_size=64, 
+        batch_size=BATCH_SIZE, 
         shuffle=True)
+    epoch = 100
+    tokenizer = SudachiTokenizer()
+    text_pipeline = lambda text: [vocab[token] for token in tokenizer.tokenized_text(text)]
     model = LSTMClassifier(
         embedding = vectors,
         h_dim = H_DIM,
         class_dim = CLASS_DIM)
-    epoch = 100
-    tokenizer = SudachiTokenizer()
-    text_pipeline = lambda text: [vocab[token] for token in tokenizer.tokenized_text(text)]
+    loss_fn = nn.CrossEntropyLoss().to(DEVICE)
+    optimizer = torch.optim.SGD(model.parameters(), lr=LR)
 
     # 指定のエポック数だけ繰り返し
     for i in range(epoch):
         # バッチごとにループ
         for batch, (labels, texts) in enumerate(dataloader):
-            model = train(model, texts, labels, text_pipeline)
+            model = train(model, texts, labels, text_pipeline, loss_fn, optimizer)
         # エポックごとに保存
