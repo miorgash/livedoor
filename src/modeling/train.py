@@ -9,12 +9,14 @@ from modeling.lstm_classifier import LSTMClassifier
 from livedoor_dataset import LivedoorDataset
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from torch.nn.utils.rnn import pad_sequence
+from torchtext.vocab import Vocab
 
-def train(model: nn.Module, 
+def train(vocab: Vocab,
+          model: nn.Module, 
           dataloader: DataLoader,
           text_pipeline: Callable, 
           loss_fn: Callable,
-          optimizer: Callable) -> nn.Module:
+          optimizer: Callable) -> Tuple:
     """1 バッチの学習
     Args:
         batch (): 学習用データのバッチ
@@ -26,7 +28,7 @@ def train(model: nn.Module,
     current_loss, mean_loss = 0, 0
 
     # バッチごとにループ
-    for batch, (labels, texts) in enumerate(dataloader):
+    for labels, texts in dataloader:
         # Tokenize, indexing and padding
         texts = [torch.tensor(text_pipeline(text)) for text in texts]
         texts = pad_sequence(texts, batch_first=True, padding_value=vocab['<pad>'])
@@ -81,9 +83,8 @@ if __name__ == '__main__':
         h_dim = H_DIM,
         class_dim = CLASS_DIM)
     loss_fn = nn.CrossEntropyLoss().to(DEVICE)
-    optimizer = torch.optim.SGD(model.parameters(), lr=LR)
+    optimizer = torch.optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
     # 指定のエポック数だけ繰り返し
     for i in range(epoch):
-        correct, loss = train(model, dataloader, text_pipeline, loss_fn, optimizer)
-        # エポックごとに保存
+        correct, loss = train(vocab, model, dataloader, text_pipeline, loss_fn, optimizer)
