@@ -22,17 +22,17 @@ if __name__ == "__main__":
     df_test = pd.read_csv(os.path.join(DIR_DATA, 'test.csv'))
 
     # Declare
-    TRAIN_BATCH_SIZE = 4
-    TEST_BATCH_SIZE = 4
+    TRAIN_BATCH_SIZE = 32
+    TEST_BATCH_SIZE = 32
     H_DIM = 100
     CLASS_DIM = 9
     LR = 1e-1
     train_dataloader = DataLoader(
-        LivedoorDataset(df_train.head(12)), 
+        LivedoorDataset(df_train), 
         batch_size=TRAIN_BATCH_SIZE, 
         shuffle=True)
     test_dataloader = DataLoader(
-        LivedoorDataset(df_test.head(12)), 
+        LivedoorDataset(df_test), 
         batch_size=TEST_BATCH_SIZE, 
         shuffle=True)
     epoch = 100
