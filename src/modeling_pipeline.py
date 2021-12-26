@@ -22,8 +22,8 @@ if __name__ == "__main__":
     df_test = pd.read_csv(os.path.join(DIR_DATA, 'test.csv'))
 
     # Declare
-    TRAIN_BATCH_SIZE = 32
-    TEST_BATCH_SIZE = 32
+    TRAIN_BATCH_SIZE = 8
+    TEST_BATCH_SIZE = 8
     H_DIM = 100
     CLASS_DIM = 9
     LR = 1e-1
@@ -49,6 +49,7 @@ if __name__ == "__main__":
     for i in range(epoch):
         accuracy_train, loss_train = train(vocab, model, train_dataloader, text_pipeline, loss_fn, optimizer)
         accuracy_test, loss_test = test(vocab, model, test_dataloader, text_pipeline, loss_fn)
-        print(f"| epoch {i:3d} | accuracy  | mean_loss |")
-        print(f"| train     | {accuracy_train:0.6f} |  {loss_train:0.6f} |")
-        print(f"| test      | {accuracy_test:0.6f} |  {loss_test:0.6f} |")
+        if i == 0:
+            print(f"|           | train                | test                 |")
+            print(f"|           | accuracy | mean_loss | accuracy | mean_loss |")
+        print(f"| epoch {i:3d} | {accuracy_train:0.6f} |  {loss_train:0.6f} | {accuracy_test:0.6f} |  {loss_test:0.6f} |")
