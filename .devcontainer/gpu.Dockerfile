@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:11.4.1-cudnn8-devel-ubuntu18.04
 RUN : "essential" && \
     apt update -y && \
     apt upgrade -y && \
