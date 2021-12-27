@@ -47,9 +47,11 @@ if __name__ == "__main__":
 
     # 指定のエポック数だけ繰り返し
     for i in range(epoch):
-        accuracy_train, loss_train = train(vocab, model, train_dataloader, text_pipeline, loss_fn, optimizer)
-        accuracy_test, loss_test = test(vocab, model, test_dataloader, text_pipeline, loss_fn)
         if i == 0:
-            print(f"|           | train                | test                 |")
-            print(f"|           | accuracy | mean_loss | accuracy | mean_loss |")
-        print(f"| epoch {i:3d} | {accuracy_train:0.6f} |  {loss_train:0.6f} | {accuracy_test:0.6f} |  {loss_test:0.6f} |")
+            print(f"|           | train                 | test                  |")
+            print(f"|           | accuracy  | mean_loss | accuracy  | mean_loss |")
+        print(f"| epoch {i:3d} ", end='')
+        accuracy_train, loss_train = train(vocab, model, train_dataloader, text_pipeline, loss_fn, optimizer)
+        print(f"|  {accuracy_train:0.6f} |  {loss_train:0.6f} ", end='')
+        accuracy_test, loss_test = test(vocab, model, test_dataloader, text_pipeline, loss_fn)
+        print(f"|  {accuracy_test:0.6f} |  {loss_test:0.6f} |")
