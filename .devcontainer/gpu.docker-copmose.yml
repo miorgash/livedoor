@@ -1,0 +1,40 @@
+version: '3'
+services:
+  dev:
+    build: .
+    image: miorgash/livedoor:gpu
+    container_name: livedoor_gpu
+    volumes:
+      - ..:/root/work
+      - sudachipy:/usr/local/lib/python3.7/dist-packages/sudachipy/resources
+      - chive:/data/chive
+      - chive_v1.2mc90:/data/chive_v1.2mc90
+      - wikientvec_100d:/data/wikientvec_100d
+      - wikientvec_300d:/data/wikientvec_300d
+      - livedoor:/data/livedoor
+    working_dir: /root/work
+    ports:
+      - "8888:8888"
+    command: jupyter notebook --ip="0.0.0.0" --notebook-dir=/root/work --allow-root --no-browser
+    restart: always
+    runtime: nvidia
+volumes:
+  sudachipy:
+    external: 
+      name: sudachipy
+  chive:
+    external: 
+      name: chive
+  chive_v1.2mc90:
+    external: 
+      name: chive_v1.2mc90
+  wikientvec_100d:
+    external: 
+      name: wikientvec_100d
+  wikientvec_300d:
+    external: 
+      name: wikientvec_300d
+  livedoor:
+    external: 
+      name: livedoor
+
