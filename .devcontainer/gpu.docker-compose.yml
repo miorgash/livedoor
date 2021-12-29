@@ -1,12 +1,13 @@
 version: '3'
 services:
   dev:
-    build: .
-    image: miorgash/livedoor:gpu
-    container_name: livedoor_gpu
+    build: 
+      context: .
+      dockerfile: gpu.Dockerfile
+    image: miorgash/livedoor:cuda
+    container_name: livedoor_cuda
     volumes:
       - ..:/root/work
-      - sudachipy:/usr/local/lib/python3.7/dist-packages/sudachipy/resources
       - chive:/data/chive
       - chive_v1.2mc90:/data/chive_v1.2mc90
       - wikientvec_100d:/data/wikientvec_100d
