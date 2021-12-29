@@ -25,7 +25,6 @@ sudachipy==0.6.0rc1
 sudachidict_core==20210802.post1
 sudachidict_small==20210802.post1
 sudachidict_full==20210802.post1
-torch==1.8.1
 torchtext==0.9.1
 tqdm==4.56.0
 xgboost==1.3.3
