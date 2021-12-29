@@ -8,7 +8,7 @@ class LSTMClassifier(nn.Module):
     def __init__(self, embedding, h_dim, class_dim):
         super(LSTMClassifier, self).__init__()
         torch.manual_seed(SEED)
-        self.embedding = nn.Embedding.from_pretrained(torch.Tensor(embedding))
+        self.embedding = nn.Embedding.from_pretrained(embedding)
         self.lstm = nn.LSTM(embedding.shape[1], h_dim, batch_first=True)
         self.linear = nn.Linear(h_dim, class_dim)
         
