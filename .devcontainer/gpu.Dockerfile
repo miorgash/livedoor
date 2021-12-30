@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.4.1-cudnn8-devel-ubuntu18.04
+FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu18.04
 RUN : "essential" && \
     apt update -y && \
     apt upgrade -y && \
@@ -36,8 +36,8 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH=$PATH:/root/.cargo/bin
 RUN : "Default kernel" && \
     pip install -U pip && \
-    pip install -r /var/requirements.txt && \
-    : "torch" && \
-   python3.7 -m pip install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html 
+    : "torch; torchtext が torch に依存するので requirements.txt を用いた install より先に実行する" && \
+    python3.7 -m pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html && \
+    pip install -r /var/requirements.txt
 RUN : "create dir" && \
     mkdir -p /data/
