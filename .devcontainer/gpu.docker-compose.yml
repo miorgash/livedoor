@@ -8,11 +8,11 @@ services:
     container_name: livedoor_cuda
     volumes:
       - ..:/root/work
-      - chive:/data/chive
+      - chive_v1.2mc5:/data/chive_v1.2mc5
       - chive_v1.2mc90:/data/chive_v1.2mc90
       - wikientvec_100d:/data/wikientvec_100d
       - wikientvec_300d:/data/wikientvec_300d
-      - livedoor:/data/livedoor
+      - ldcc:/data/ldcc
     working_dir: /root/work
     ports:
       - "8888:8888"
@@ -20,12 +20,9 @@ services:
     restart: always
     runtime: nvidia
 volumes:
-  sudachipy:
+  chive_v1.2mc5:
     external: 
-      name: sudachipy
-  chive:
-    external: 
-      name: chive
+      name: chive_v1.2mc5
   chive_v1.2mc90:
     external: 
       name: chive_v1.2mc90
@@ -35,7 +32,6 @@ volumes:
   wikientvec_300d:
     external: 
       name: wikientvec_300d
-  livedoor:
+  ldcc:
     external: 
-      name: livedoor
-
+      name: ldcc
