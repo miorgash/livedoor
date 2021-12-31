@@ -7,6 +7,7 @@ import pickle5 as pickle
 from const import *
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from torchtext.vocab import Vocab
+import torchtext
 from tqdm import tqdm
 
 
@@ -35,7 +36,7 @@ def create_vocab(input_corpus, input_pretrained_vectors) -> Vocab:
         for text in tqdm(texts):
             counter.update(words_found_in_pretrained_embedding & set(text))
     
-    return Vocab(counter)
+    return torchtext.vocab.vocab(counter)
 
 if __name__ == '__main__':
     input_corpus = os.path.join(DIR_DATA, 'train.csv')

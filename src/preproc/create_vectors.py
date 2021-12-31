@@ -18,7 +18,8 @@ def create_vectors(input_vocab: str, input_pretrained_vectors: str) -> np.array:
     vectors = gensim.models.KeyedVectors.load(input_pretrained_vectors)
     
     vectors_for_unk_and_pad = np.zeros((2, 300))
-    words = [vocab.itos[i] for i in range(len(vocab))]
+    itos = vocab.get_itos()
+    words = [itos[i] for i in range(len(vocab))]
     return np.concatenate((vectors_for_unk_and_pad,
                            np.array([vectors[w] for w in words[2:]])), axis=0)
 
