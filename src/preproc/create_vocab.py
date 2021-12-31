@@ -35,8 +35,13 @@ def create_vocab(input_corpus, input_pretrained_vectors) -> Vocab:
         texts = map(lambda row: tokenizer.tokenized_text(row[1]), reader)
         for text in tqdm(texts):
             counter.update(words_found_in_pretrained_embedding & set(text))
+
+    vocab = torchtext.vocab.vocab(counter)
+    vocab.insert_token('<pad>', 0)
+    vocab.insert_token('<unk>', 1)
+    vocab.set_default_index(1)
     
-    return torchtext.vocab.vocab(counter)
+    return vocab
 
 if __name__ == '__main__':
     input_corpus = os.path.join(DIR_DATA, 'train.csv')
