@@ -36,6 +36,8 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH=$PATH:/root/.cargo/bin
 RUN : "Default kernel" && \
     pip install -U pip && \
+    : "torch; torchtext が torch に依存するので requirements.txt を用いた install より先に実行する" && \
+    python3.7 -m pip install torch==1.9.0+cpu torchvision==0.10.0+cpu torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html && \
     pip install -r /var/requirements.txt
 RUN : "create dir" && \
     mkdir -p /data/
