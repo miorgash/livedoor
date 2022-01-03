@@ -1,15 +1,14 @@
-from modeling.train import train
-from modeling.test import test
-
 import os
 import pandas as pd
+import pickle5 as pickle
 from torch import nn
 from torch.utils.data import DataLoader
 from const import *
-import pickle5 as pickle
-from modeling.lstm_classifier import LSTMClassifier
 from livedoor_dataset import LivedoorDataset
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
+from train import train
+from test import test
+from lstm_classifier import LSTMClassifier
 
 def run(vocab, vectors, df_train, df_test,
         train_batch_size: int,  test_batch_size: int,
