@@ -7,8 +7,8 @@ if __name__ == '__main__':
     # **
     # create_table
     # *
-    input_dir = '/data/livedoor/text/'
-    text_column = 'text'
+    input_dir = '/data/ldcc/text/'
+    text_column = 'title'
     output_file = os.path.join(ROOT, 'data', f'livedoor&text={text_column}.csv')
 
     table = create_table(input_dir, text_column)
@@ -25,12 +25,11 @@ if __name__ == '__main__':
     # **
     # create_splits
     # *
-    input_file = os.path.join(DIR_DATA, 'livedoor&text=text.csv')
-
+    input_file = os.path.join(DIR_DATA, 'livedoor&text=title.csv')
     train, test = create_splits(input_file)
     
     for split, dataframe in zip(('train', 'test'), (train, test)):
-        output_file = os.path.join(DIR_DATA, f'{split}.csv')
+        output_file = os.path.join(DIR_DATA, f'title.{split}.csv')
         if os.path.isfile(output_file):
             print(f'file exists: {output_file}')
         else:
