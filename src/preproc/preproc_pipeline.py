@@ -25,14 +25,15 @@ if __name__ == '__main__':
     for split, dataframe in zip(('train', 'test'), (train, test)):
         create_dataframe_if_not_exists(
             dataframe=dataframe,
-            output_file=os.path.join(DIR_DATA, f'title.{split}.csv')
+            output_file=os.path.join(DIR_DATA, f'{TEXT_COLUMN}.{split}.csv')
         )
     
     print("# create_vocab")
-    input_corpus = os.path.join(DIR_DATA, 'title.train.csv')
+    input_corpus = os.path.join(DIR_DATA, '{TEXT_COLUMN}.train.csv')
     input_pretrained_vectors = '/data/chive_v1.2mc90/chive-1.2-mc90_gensim/chive-1.2-mc90.kv'
-    output_file = os.path.join(DIR_BIN, 'title.vocab.pkl')
+    output_file = os.path.join(DIR_BIN, '{TEXT_COLUMN}.vocab.pkl')
     vocab = create_vocab(input_corpus, input_pretrained_vectors)
     create_pickle_if_not_exists(vocab, output_file)
 
     print("# create_vectors")
+    
