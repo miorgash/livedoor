@@ -44,9 +44,9 @@ def create_vocab(input_corpus, input_pretrained_vectors) -> Vocab:
     return vocab
 
 if __name__ == '__main__':
-    input_corpus = os.path.join(DIR_DATA, 'train.csv')
+    input_corpus = os.path.join(DIR_DATA, 'title.train.csv')
     input_pretrained_vectors = '/data/chive_v1.2mc90/chive-1.2-mc90_gensim/chive-1.2-mc90.kv'
-    output_file = os.path.join(DIR_BIN, 'vocab.pkl')
+    output_file = os.path.join(DIR_BIN, 'title.vocab.pkl')
     vocab = create_vocab(input_corpus, input_pretrained_vectors)
 
     if os.path.isfile(output_file):

@@ -59,7 +59,7 @@ if __name__ == '__main__':
     '''main として実行時はファイルを出力する
     '''
     # Args
-    input_dir = '/data/livedoor/text/'
+    input_dir = '/data/ldcc/text/'
     text_column = 'text'
     output_file = os.path.join(ROOT, 'data', f'livedoor&text={text_column}.csv')
 

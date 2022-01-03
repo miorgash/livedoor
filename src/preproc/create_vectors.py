@@ -24,9 +24,9 @@ def create_vectors(input_vocab: str, input_pretrained_vectors: str) -> np.array:
                            np.array([vectors[w] for w in words[2:]])), axis=0)
 
 if __name__ == '__main__':
-    input_vocab = os.path.join(DIR_BIN, 'vocab.pkl')
+    input_vocab = os.path.join(DIR_BIN, 'title.vocab.pkl')
     input_pretrained_vectors = '/data/chive_v1.2mc90/chive-1.2-mc90_gensim/chive-1.2-mc90.kv'
-    output_file = os.path.join(DIR_BIN, 'vectors.pkl')
+    output_file = os.path.join(DIR_BIN, 'title.vectors.pkl')
     vectors = create_vectors(input_vocab, input_pretrained_vectors)
 
     if os.path.isfile(output_file):
