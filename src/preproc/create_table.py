@@ -52,6 +52,8 @@ def create_table(input_dir: str, text_column: str) -> pd.DataFrame:
     itos = {i: s for i, s in enumerate(set(table['media']))}
     stoi = {s: i for i, s in itos.items()}
     table.loc[:, 'media'] = table['media'].map(stoi)
+    print(table.head())
+    print(table.shape)
 
     return table
 
