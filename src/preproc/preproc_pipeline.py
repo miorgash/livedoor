@@ -1,8 +1,9 @@
 import pandas as pd
 from preproc.create_table import create_table
 from preproc.create_splits import create_splits
+from preproc.create_vocab import create_vocab
 from const import *
-from util import create_dataframe_if_not_exists
+from util import create_dataframe_if_not_exists, create_pickle_if_not_exists
 
 if __name__ == '__main__':
 
@@ -26,3 +27,12 @@ if __name__ == '__main__':
             dataframe=dataframe,
             output_file=os.path.join(DIR_DATA, f'title.{split}.csv')
         )
+    
+    print("# create_vocab")
+    input_corpus = os.path.join(DIR_DATA, 'title.train.csv')
+    input_pretrained_vectors = '/data/chive_v1.2mc90/chive-1.2-mc90_gensim/chive-1.2-mc90.kv'
+    output_file = os.path.join(DIR_BIN, 'title.vocab.pkl')
+    vocab = create_vocab(input_corpus, input_pretrained_vectors)
+    create_pickle_if_not_exists(vocab, output_file)
+
+    print("# create_vectors")

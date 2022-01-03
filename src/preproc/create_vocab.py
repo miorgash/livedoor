@@ -9,6 +9,7 @@ from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from torchtext.vocab import Vocab
 import torchtext
 from tqdm import tqdm
+from util import create_pickle_if_not_exists
 
 
 def create_vocab(input_corpus, input_pretrained_vectors) -> Vocab:
@@ -48,10 +49,4 @@ if __name__ == '__main__':
     input_pretrained_vectors = '/data/chive_v1.2mc90/chive-1.2-mc90_gensim/chive-1.2-mc90.kv'
     output_file = os.path.join(DIR_BIN, 'title.vocab.pkl')
     vocab = create_vocab(input_corpus, input_pretrained_vectors)
-
-    if os.path.isfile(output_file):
-        print(f'file exists: {output_file}')
-    else:
-        with open(output_file, 'wb') as f:
-            pickle.dump(vocab, f, protocol=5)
-        print(f'file created: {output_file}')
+    create_pickle_if_not_exists(vocab, output_file)
