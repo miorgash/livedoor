@@ -6,9 +6,9 @@ from torch.utils.data import DataLoader
 from const import *
 from livedoor_dataset import LivedoorDataset
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
-from train import train
-from test import test
-from lstm_classifier import LSTMClassifier
+from modeling.train import train
+from modeling.test import test
+from modeling.lstm_classifier import LSTMClassifier
 
 def run(vocab, vectors, df_train, df_test,
         train_batch_size: int,  test_batch_size: int,
