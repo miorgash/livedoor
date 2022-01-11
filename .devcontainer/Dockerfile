@@ -1,20 +1,22 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 RUN : "essential" && \
-    apt update -y && \
-    apt upgrade -y && \
-    apt install sudo apt-utils vim git -y && \
+    apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install sudo apt-utils vim git -y && \
     : "japanese setting for os" && \
     apt-get install -y language-pack-ja-base language-pack-ja && \
     : "japanese setting for jupyter" && \
-    sudo apt-get install -y fonts-ipaexfont && \
-    : "python" && \
-    apt install python3.7 python3.7-dev python3-pip python3.7-venv -y && \
-    python3.7 -m pip install -U pip && \
+    apt-get install -y fonts-ipaexfont
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia
+RUN : "python" && \
+    apt-get install python3.9 python3.9-venv python3-pip -y && \
+    python3.9 -m pip install -U pip && \
     : "required by mecab-python3, Tensorflow etc." && \
     apt install swig -y && \
-    python3.7 -m pip install wheel && \
-    python3.7 -m pip install -U setuptools && \
-    python3.7 -m pip install -U six
+    python3.9 -m pip install wheel && \
+    python3.9 -m pip install -U setuptools && \
+    python3.9 -m pip install -U six
 ENV LANG=ja_JP.UTF-8
 RUN : "image peculiar settings" && \
     : "MeCab and dictionaries": && \
@@ -37,7 +39,7 @@ ENV PATH=$PATH:/root/.cargo/bin
 RUN : "Default kernel" && \
     pip install -U pip && \
     : "torch; torchtext が torch に依存するので requirements.txt を用いた install より先に実行する" && \
-    python3.7 -m pip install torch==1.9.0+cpu torchvision==0.10.0+cpu torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html && \
-    pip install -r /var/requirements.txt
+    python3.9 -m pip install torch==1.9.0+cpu torchvision==0.10.0+cpu torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
+RUN python3.9 -m pip install -r /var/requirements.txt
 RUN : "create dir" && \
     mkdir -p /data/
