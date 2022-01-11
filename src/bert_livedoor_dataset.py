@@ -25,7 +25,7 @@ class BertLivedoorDataset(Dataset):
         return len(self.label)
   
     def __getitem__(self, i):
-        return (self.label[i], self.text[i], self.attention_mask[i])
+        return (self.label[i], self.input_ids[i], self.attention_mask[i])
 
 if __name__=='__main__':
     dataset = BertLivedoorDataset()

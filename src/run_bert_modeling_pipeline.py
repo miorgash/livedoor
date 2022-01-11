@@ -1,13 +1,66 @@
 import os
 import pandas as pd
 import torch
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoTokenizer, BertForSequenceClassification, AdamW
 from const import *
 from torch.utils.data import Dataset, DataLoader, random_split
 from bert_livedoor_dataset import BertLivedoorDataset
+
+def train(model, dataloader, optimizer):
+    current_size = 0
+    current_correct, mean_correct = 0, 0
+    current_loss, mean_loss = 0, 0
+
+    for labels, input_ids, attention_mask in dataloader:
+        labels = labels.to(DEVICE)
+        input_ids = input_ids.to(DEVICE)
+        attention_mask = attention_mask.to(DEVICE)
+        optimizer.zero_grad()
+        output = model(input_ids, token_type_ids=None, attention_mask=attention_mask, labels= labels)
+        loss = output['loss']
+        logits = output['logits']
+        loss.backward()
+        optimizer.step()
+
+        # Evaluate score with train data
+        labels_pred = logits.argmax(axis=1)
+        current_correct += (labels_pred==labels).type(torch.int).sum().item()
+        current_loss += loss.item()
+        current_size += len(labels)
+        mean_correct = current_correct / current_size   # accuracy
+        mean_loss = current_loss / current_size
+
+    return mean_correct, mean_loss
+
+def test(model, dataloader):
+    current_size = 0
+    current_correct, mean_correct = 0, 0
+    current_loss, mean_loss = 0, 0
+
+    with torch.no_grad():
+        for labels, input_ids, attention_mask in dataloader:
+            labels = labels.to(DEVICE)
+            input_ids = input_ids.to(DEVICE)
+            attention_mask = attention_mask.to(DEVICE)
+            
+            output = model(input_ids, token_type_ids=None, attention_mask=attention_mask, labels= labels)
+            loss = output['loss']
+            logits = output['logits']
+            optimizer.step()
+
+            # Evaluate score with train data
+            labels_pred = logits.argmax(axis=1)
+            current_correct += (labels_pred==labels).type(torch.int).sum().item()
+            current_loss += loss.item()
+            current_size += len(labels)
+            mean_correct = current_correct / current_size   # accuracy
+            mean_loss = current_loss / current_size
+
+    return mean_correct, mean_loss
         
 if __name__ == "__main__":
-    tokenizer = AutoTokenizer.from_pretrained("cl-tohoku/bert-base-japanese-v2")
+    CHECKPOINT = "cl-tohoku/bert-base-japanese-v2"
+    tokenizer = AutoTokenizer.from_pretrained(CHECKPOINT)
     dataset = BertLivedoorDataset()
 
     # split
@@ -15,10 +68,17 @@ if __name__ == "__main__":
     test_size = len(dataset) - train_size
     train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
     
-    TRAIN_BATCH_SIZE, TEST_BATCH_SIZE = 128, 1024
+    TRAIN_BATCH_SIZE, TEST_BATCH_SIZE = 32, 64
     train_dataloader = DataLoader(train_dataset, batch_size=TRAIN_BATCH_SIZE, shuffle=True)
     test_dataloader  = DataLoader(test_dataset, batch_size=TRAIN_BATCH_SIZE, shuffle=True)
 
-# DataSet/DataLoader
+    model = BertForSequenceClassification.from_pretrained(CHECKPOINT, num_labels=9)
+    model = model.to(DEVICE)
+    LR = 2e-5
+    optimizer = AdamW(model.parameters(), lr=LR)
 
-# loop epochs
+    # loop epochs
+    print("train")
+    train(model, train_dataloader, optimizer)
+    print("test")
+    test(model, train_dataloader)
