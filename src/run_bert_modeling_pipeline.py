@@ -78,7 +78,13 @@ if __name__ == "__main__":
     optimizer = AdamW(model.parameters(), lr=LR)
 
     # loop epochs
-    print("train")
-    train(model, train_dataloader, optimizer)
-    print("test")
-    test(model, train_dataloader)
+    EPOCHS = 10
+    for i in range(EPOCHS):
+        if i == 0:
+            print(f"|           | train                 | test                  |")
+            print(f"|           | accuracy  | mean_loss | accuracy  | mean_loss |")
+        print(f"| epoch {i:3d} ", end='')
+        accuracy_train, loss_train = train(model, train_dataloader, optimizer)
+        print(f"|  {accuracy_train:0.6f} |  {loss_train:0.6f} ", end='')
+        accuracy_test, loss_test = test(model, train_dataloader)
+        print(f"|  {accuracy_test:0.6f} |  {loss_test:0.6f} |")
