@@ -91,8 +91,11 @@ if __name__ == "__main__":
     for param in model.classifier.parameters():
         param.requires_grad = True
     
-    LR = 1e-4
-    optimizer = AdamW(model.parameters(), lr=LR)
+    # optimizer = Adam(model.parameters(), lr=LR)
+    optimizer = torch.optim.Adam([
+        {'params': model.bert.encoder.layer[-1].parameters(), 'lr': 1e-6},
+        {'params': model.classifier.parameters(), 'lr': 1e-5}
+    ])
 
     # loop epochs
     EPOCHS = 20
