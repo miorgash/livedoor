@@ -11,6 +11,8 @@ def train(model, dataloader, optimizer):
     current_correct, mean_correct = 0, 0
     current_loss, mean_loss = 0, 0
 
+    model.train()
+
     for labels, input_ids, attention_mask in dataloader:
         labels = labels.to(DEVICE)
         input_ids = input_ids.to(DEVICE)
@@ -20,6 +22,7 @@ def train(model, dataloader, optimizer):
         loss = output['loss']
         logits = output['logits']
         loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         optimizer.step()
 
         # Evaluate score with train data
@@ -36,6 +39,8 @@ def test(model, dataloader):
     current_size = 0
     current_correct, mean_correct = 0, 0
     current_loss, mean_loss = 0, 0
+
+    model.eval()
 
     with torch.no_grad():
         for labels, input_ids, attention_mask in dataloader:
@@ -74,11 +79,23 @@ if __name__ == "__main__":
 
     model = BertForSequenceClassification.from_pretrained(CHECKPOINT, num_labels=9)
     model = model.to(DEVICE)
-    LR = 2e-5
+
+    for param in model.parameters():
+        param.requires_grad = False
+
+    # BERTの最後の層だけ更新ON
+    for param in model.bert.encoder.layer[-1].parameters():
+        param.requires_grad = True
+
+    # クラス分類のところもON
+    for param in model.classifier.parameters():
+        param.requires_grad = True
+    
+    LR = 1e-4
     optimizer = AdamW(model.parameters(), lr=LR)
 
     # loop epochs
-    EPOCHS = 10
+    EPOCHS = 20
     for i in range(EPOCHS):
         if i == 0:
             print(f"|           | train                 | test                  |")
