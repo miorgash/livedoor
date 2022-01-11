@@ -6,7 +6,7 @@ from preproc.create_vectors import create_vectors
 from const import *
 from util import create_dataframe_if_not_exists, create_pickle_if_not_exists
 import gensim
-import pickle5 as pickle
+import pickle
 
 
 if __name__ == '__main__':

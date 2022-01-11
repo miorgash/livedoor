@@ -3,7 +3,6 @@ import os
 from collections import Counter
 
 import gensim
-import pickle5 as pickle
 from const import *
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from torchtext.vocab import Vocab

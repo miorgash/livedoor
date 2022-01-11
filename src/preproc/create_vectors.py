@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import pickle5 as pickle
+import pickle
 import gensim
 from util import create_pickle_if_not_exists
 

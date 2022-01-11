@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-import pickle5 as pickle
+import pickle
 from const import *
 from modeling import lstm_modeling_pipeline
 
@@ -14,5 +14,5 @@ if __name__ == "__main__":
     df_test = pd.read_csv(os.path.join(DIR_DATA, 'title.test.csv'))
 
     lstm_modeling_pipeline.run(vocab, vectors, df_train, df_test,
-        train_batch_size=64, test_batch_size=1024,
+        train_batch_size=4, test_batch_size=8,
         h_dim=100, lr=1e-1, epoch=100)
