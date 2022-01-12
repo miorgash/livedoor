@@ -61,14 +61,14 @@ def train(vocab: Vocab,
 if __name__ == '__main__':
 
     # File i/o
-    with open(os.path.join(DIR_BIN, "vectors.pkl"), "rb") as f:
+    with open(os.path.join(DIR_BIN, "title.vectors.pkl"), "rb") as f:
         vectors = pickle.load(f)
-    with open(os.path.join(DIR_BIN, "vocab.pkl"), "rb") as f:
+    with open(os.path.join(DIR_BIN, "title.vocab.pkl"), "rb") as f:
         vocab = pickle.load(f)
-    dataframe = pd.read_csv(os.path.join(DIR_DATA, 'train.csv'))
+    dataframe = pd.read_csv(os.path.join(DIR_DATA, 'title.train.csv'))
 
     # Declare
-    BATCH_SIZE = 4
+    BATCH_SIZE = 8
     H_DIM = 100
     CLASS_DIM = 9
     LR = 1e-1
@@ -80,9 +80,10 @@ if __name__ == '__main__':
     tokenizer = SudachiTokenizer()
     text_pipeline = lambda text: [vocab[token] for token in tokenizer.tokenized_text(text)]
     model = LSTMClassifier(
-        embedding = vectors,
+        embedding = torch.Tensor(vectors).to(DEVICE),
         h_dim = H_DIM,
         class_dim = CLASS_DIM)
+    model = model.to(DEVICE)
     loss_fn = nn.CrossEntropyLoss().to(DEVICE)
     optimizer = torch.optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
