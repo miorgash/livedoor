@@ -93,12 +93,12 @@ if __name__ == "__main__":
     
     # optimizer = Adam(model.parameters(), lr=LR)
     optimizer = torch.optim.Adam([
-        {'params': model.bert.encoder.layer[-1].parameters(), 'lr': 1e-6},
+        {'params': model.bert.encoder.layer[-1].parameters(), 'lr': 5e-7},
         {'params': model.classifier.parameters(), 'lr': 1e-5}
     ])
 
     # loop epochs
-    EPOCHS = 20
+    EPOCHS = 50
     for i in range(EPOCHS):
         if i == 0:
             print(f"|           | train                 | test                  |")
