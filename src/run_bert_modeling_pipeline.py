@@ -1,12 +1,12 @@
 import os
 import pandas as pd
 import torch
-from transformers import AutoTokenizer, BertForSequenceClassification, AdamW
+from transformers import AutoTokenizer, BertForSequenceClassification
 from const import *
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader, random_split
 from bert_livedoor_dataset import BertLivedoorDataset
 
-def train(model, dataloader, optimizer):
+def train(dataloader, model, optimizer):
     current_size = 0
     current_correct, mean_correct = 0, 0
     current_loss, mean_loss = 0, 0
@@ -35,7 +35,7 @@ def train(model, dataloader, optimizer):
 
     return mean_correct, mean_loss
 
-def test(model, dataloader):
+def test(dataloader, model):
     current_size = 0
     current_correct, mean_correct = 0, 0
     current_loss, mean_loss = 0, 0
@@ -104,7 +104,7 @@ if __name__ == "__main__":
             print(f"|           | train                 | test                  |")
             print(f"|           | accuracy  | mean_loss | accuracy  | mean_loss |")
         print(f"| epoch {i:3d} ", end='')
-        accuracy_train, loss_train = train(model, train_dataloader, optimizer)
+        accuracy_train, loss_train = train(train_dataloader, model, optimizer)
         print(f"|  {accuracy_train:0.6f} |  {loss_train:0.6f} ", end='')
-        accuracy_test, loss_test = test(model, train_dataloader)
+        accuracy_test, loss_test = test(train_dataloader, model)
         print(f"|  {accuracy_test:0.6f} |  {loss_test:0.6f} |")
