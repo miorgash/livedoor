@@ -4,7 +4,7 @@ import pickle
 from torch import nn
 from torch.utils.data import DataLoader
 from const import *
-from livedoor_dataset import LivedoorDataset
+from livedoor_dataset import LstmLivedoorDataset
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from modeling.train import train
 from modeling.test import test
@@ -15,10 +15,10 @@ def run(vocab, vectors, df_train, df_test,
         h_dim: int, lr: float, epoch: int) -> None:
     CLASS_DIM = 9
     MOMENTUM = 0.9
-    train_dataloader = DataLoader(LivedoorDataset(df_train), 
+    train_dataloader = DataLoader(LstmLivedoorDataset(df_train), 
                                 batch_size=train_batch_size,
                                 shuffle=True)
-    test_dataloader = DataLoader(LivedoorDataset(df_test), 
+    test_dataloader = DataLoader(LstmLivedoorDataset(df_test), 
                                 batch_size=test_batch_size, 
                                 shuffle=True)
     tokenizer = SudachiTokenizer()

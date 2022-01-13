@@ -13,10 +13,26 @@ class LivedoorDataset(Dataset):
         self.text = dataframe.iloc[:, -1]
       
     def __len__(self):
-        return len(self.label)
+        raise NotImplementedError
   
     def __getitem__(self, idx):
-        return (self.label[idx], self.text[idx])
+        raise NotImplementedError
+
+class LstmLivedoorDataset(LivedoorDataset):
+    def __init__(self, dataframe):
+        super().__init__(dataframe)
+    def __len__(self):
+        return len(self.label)
+    def __getitem__(self, i):
+        return (self.label[i], self.text[i])
+
+class BertLivedoorDataset(LivedoorDataset):
+    def __init__(self, dataframe):
+        super().__init__(dataframe)
+    def __len__(self):
+        return super().__len__()
+    def __getitem__(self, idx):
+        return super().__getitem__(idx)
 
 if __name__=='__main__':
     from const import *
