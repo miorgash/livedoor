@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import pickle
 from torch import nn
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
 from const import *
 from livedoor_dataset import LstmLivedoorDataset
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
@@ -10,17 +10,23 @@ from modeling.train import train
 from modeling.test import test
 from modeling.lstm_classifier import LSTMClassifier
 
-def run(vocab, vectors, df_train, df_test,
+def run(vocab, vectors, dataset,
         train_batch_size: int,  test_batch_size: int,
         h_dim: int, lr: float, epoch: int) -> None:
     CLASS_DIM = 9
     MOMENTUM = 0.9
-    train_dataloader = DataLoader(LstmLivedoorDataset(df_train), 
+    
+    # dataloader
+    train_size = int(0.8 * len(dataset))
+    test_size = len(dataset) - train_size
+    train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
+    train_dataloader = DataLoader(train_dataset, 
                                 batch_size=train_batch_size,
                                 shuffle=True)
-    test_dataloader = DataLoader(LstmLivedoorDataset(df_test), 
+    test_dataloader = DataLoader(test_dataset, 
                                 batch_size=test_batch_size, 
                                 shuffle=True)
+    # tokenizer
     tokenizer = SudachiTokenizer()
     text_pipeline = lambda text: [vocab[token] for token in tokenizer.tokenized_text(text)]
     model = LSTMClassifier(
@@ -49,9 +55,8 @@ if __name__ == "__main__":
         vocab = pickle.load(f)
     with open(os.path.join(DIR_BIN, "title.vectors.pkl"), "rb") as f:
         vectors = pickle.load(f)
-    df_train = pd.read_csv(os.path.join(DIR_DATA, 'title.train.csv'))
-    df_test = pd.read_csv(os.path.join(DIR_DATA, 'title.test.csv'))
+    dataset = LstmLivedoorDataset()
 
-    run(vocab, vectors, df_train, df_test,
+    run(vocab, vectors, dataset,
         train_batch_size=64, test_batch_size=1024,
         h_dim=100, lr=1e-1, epoch=100)
