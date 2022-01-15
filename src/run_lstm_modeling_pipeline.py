@@ -3,7 +3,7 @@ import pandas as pd
 import pickle
 from const import *
 from modeling import lstm_modeling_pipeline
-from livedoor_dataset import LstmLivedoorDataset
+from utils.data import LstmLivedoorDataset
 
 if __name__ == "__main__":
     # File i/o

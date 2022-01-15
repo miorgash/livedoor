@@ -4,7 +4,7 @@ import pickle
 from torch import nn
 from torch.utils.data import DataLoader, random_split
 from const import *
-from livedoor_dataset import LstmLivedoorDataset
+from utils.data import LstmLivedoorDataset
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from modeling.train import train
 from modeling.test import test

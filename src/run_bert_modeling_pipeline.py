@@ -4,7 +4,7 @@ import torch
 from transformers import AutoTokenizer, BertForSequenceClassification
 from const import *
 from torch.utils.data import DataLoader, random_split
-from livedoor_dataset import BertLivedoorDataset
+from utils.data import BertLivedoorDataset
 
 def train(dataloader, model, optimizer):
     current_size = 0

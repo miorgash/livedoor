@@ -8,7 +8,7 @@ from const import *
 # import pickle5 as pickle
 import pickle
 from modeling.lstm_classifier import LSTMClassifier
-from livedoor_dataset import LivedoorDataset
+from utils.data import LivedoorDataset
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from torch.nn.utils.rnn import pad_sequence
 
