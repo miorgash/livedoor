@@ -49,6 +49,7 @@ def create_table(input_dir: str, text_column: str) -> pd.DataFrame:
     table = table[['media', text_column]]
 
     # label を数値化
+    # TODO: 毎回数字が変わる。同じメディアに同じ数字が割り当てられるよう修正する。
     itos = {i: s for i, s in enumerate(set(table['media']))}
     stoi = {s: i for i, s in itos.items()}
     table.loc[:, 'media'] = table['media'].map(stoi)

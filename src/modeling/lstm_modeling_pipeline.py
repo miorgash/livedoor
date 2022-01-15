@@ -1,30 +1,41 @@
-import os
-import pandas as pd
-import pickle
 from torch import nn
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
+from torch.nn.utils.rnn import pad_sequence
 from const import *
-from livedoor_dataset import LivedoorDataset
+from utils.data import LstmLivedoorDataset
 from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from modeling.train import train
 from modeling.test import test
 from modeling.lstm_classifier import LSTMClassifier
+def collate_fn(batch):
+    labels, id_sequences = list(zip(*batch))
+    labels = torch.stack(labels)
+    id_sequences = pad_sequence(id_sequences, batch_first=True, padding_value=0)
+    return labels, id_sequences
 
-def run(vocab, vectors, df_train, df_test,
+def run(dataset,
         train_batch_size: int,  test_batch_size: int,
         h_dim: int, lr: float, epoch: int) -> None:
     CLASS_DIM = 9
     MOMENTUM = 0.9
-    train_dataloader = DataLoader(LivedoorDataset(df_train), 
+    
+    # dataloader
+    train_size = int(0.8 * len(dataset))
+    test_size = len(dataset) - train_size
+    train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
+    train_dataloader = DataLoader(train_dataset, 
                                 batch_size=train_batch_size,
+                                collate_fn=collate_fn,
                                 shuffle=True)
-    test_dataloader = DataLoader(LivedoorDataset(df_test), 
+    test_dataloader = DataLoader(test_dataset, 
                                 batch_size=test_batch_size, 
+                                collate_fn=collate_fn,
                                 shuffle=True)
+    # tokenizer
     tokenizer = SudachiTokenizer()
-    text_pipeline = lambda text: [vocab[token] for token in tokenizer.tokenized_text(text)]
+    # text_pipeline = lambda text: [vocab[token] for token in tokenizer.tokenized_text(text)]
     model = LSTMClassifier(
-        embedding = torch.Tensor(vectors).to(DEVICE),
+        embedding = torch.Tensor(dataset.vectors).to(DEVICE),
         h_dim = h_dim,
         class_dim = CLASS_DIM)
     model = model.to(DEVICE)
@@ -37,21 +48,14 @@ def run(vocab, vectors, df_train, df_test,
             print(f"|           | train                 | test                  |")
             print(f"|           | accuracy  | mean_loss | accuracy  | mean_loss |")
         print(f"| epoch {i:3d} ", end='')
-        accuracy_train, loss_train = train(vocab, model, train_dataloader, text_pipeline, loss_fn, optimizer)
+        accuracy_train, loss_train = train(train_dataloader, model, loss_fn, optimizer)
         print(f"|  {accuracy_train:0.6f} |  {loss_train:0.6f} ", end='')
-        accuracy_test, loss_test = test(vocab, model, test_dataloader, text_pipeline, loss_fn)
+        accuracy_test, loss_test = test(test_dataloader, model, loss_fn)
         print(f"|  {accuracy_test:0.6f} |  {loss_test:0.6f} |")
     return 1
 
 if __name__ == "__main__":
-    # File i/o
-    with open(os.path.join(DIR_BIN, "title.vocab.pkl"), "rb") as f:
-        vocab = pickle.load(f)
-    with open(os.path.join(DIR_BIN, "title.vectors.pkl"), "rb") as f:
-        vectors = pickle.load(f)
-    df_train = pd.read_csv(os.path.join(DIR_DATA, 'title.train.csv'))
-    df_test = pd.read_csv(os.path.join(DIR_DATA, 'title.test.csv'))
-
-    run(vocab, vectors, df_train, df_test,
+    dataset = LstmLivedoorDataset()
+    run(dataset,
         train_batch_size=64, test_batch_size=1024,
         h_dim=100, lr=1e-1, epoch=100)
