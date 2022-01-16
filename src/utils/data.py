@@ -44,7 +44,7 @@ class LstmLivedoorDataset(LivedoorDataset):
         for instance in tqdm(self.text):
             token_sequence = [token.surface() for token in self.tokenizer.tokenize(instance)]
             token_sequences.append(token_sequence)
-        # vocabrary の構築
+        # 学習用コーパスと学習済み分散表現に含まれる語の Vocab を作成する。
         counter = Counter()
         for token_sequence in tqdm(token_sequences):
             counter.update(words_found_in_pretrained_vectors & set(token_sequence))
@@ -56,7 +56,7 @@ class LstmLivedoorDataset(LivedoorDataset):
         self.id_sequences = []
         for token_sequence in token_sequences:
             self.id_sequences.append(torch.tensor([self.vocab[token] for token in token_sequence]))
-        # Embedding
+        # 学習用 vectors を作成する。軽量化のため学習用データ語彙との積集合のみ使用。
         vectors_for_unk_and_pad = np.zeros((2, 300))
         itos = self.vocab.get_itos()
         words = [itos[i] for i in range(len(self.vocab))]
