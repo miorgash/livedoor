@@ -128,7 +128,7 @@ class BertLivedoorDataset(LivedoorDataset):
         return (self.label[i], self.input_ids[i], self.attention_mask[i])
 
 if __name__=='__main__':
-    from const import *
+    from utils.const import *
     f = os.path.join(DIR_DATA, 'livedoor&text=title.csv')
     dataset = pd.read_csv(f)
     dataset = LstmLivedoorDataset()
