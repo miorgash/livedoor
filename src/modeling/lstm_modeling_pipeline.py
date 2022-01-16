@@ -3,7 +3,6 @@ from torch.utils.data import DataLoader, random_split
 from torch.nn.utils.rnn import pad_sequence
 from const import *
 from utils.data import LstmLivedoorDataset
-from tokenizer.sudachi_tokenizer import SudachiTokenizer
 from modeling.train import train
 from modeling.test import test
 from modeling.lstm_classifier import LSTMClassifier
@@ -31,9 +30,6 @@ def run(dataset,
                                 batch_size=test_batch_size, 
                                 collate_fn=collate_fn,
                                 shuffle=True)
-    # tokenizer
-    tokenizer = SudachiTokenizer()
-    # text_pipeline = lambda text: [vocab[token] for token in tokenizer.tokenized_text(text)]
     model = LSTMClassifier(
         embedding = torch.Tensor(dataset.vectors).to(DEVICE),
         h_dim = h_dim,
