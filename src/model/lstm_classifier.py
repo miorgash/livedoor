@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from const import *
+from utils.const import *
 # todo: vocab, embedding 渡して vocab_size, embed_dim は渡さないようにする
 
 class LSTMClassifier(nn.Module):
