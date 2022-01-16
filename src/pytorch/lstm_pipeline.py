@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader, random_split
 from torch.nn.utils.rnn import pad_sequence
 from utils.const import *
 from data import LstmLivedoorDataset
-from model.lstm_classifier import LSTMClassifier
+from pytorch.model.lstm_classifier import LSTMClassifier
 from typing import Tuple, Callable
 
 def train(dataloader: DataLoader,
