@@ -1,5 +1,3 @@
-import os
-import pandas as pd
 import torch
 from transformers import AutoTokenizer, BertForSequenceClassification
 from const import *
