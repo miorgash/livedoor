@@ -3,9 +3,78 @@ from torch.utils.data import DataLoader, random_split
 from torch.nn.utils.rnn import pad_sequence
 from const import *
 from utils.data import LstmLivedoorDataset
-from modeling.train import train
-from modeling.test import test
-from modeling.lstm_classifier import LSTMClassifier
+from model.lstm_classifier import LSTMClassifier
+from typing import Tuple, Callable
+
+def train(dataloader: DataLoader,
+          model: nn.Module, 
+          loss_fn: Callable,
+          optimizer: Callable) -> Tuple:
+    """1 バッチの学習
+    Args:
+        batch (): 学習用データのバッチ
+    Returns:
+        学習済み model
+    """
+    current_size = 0
+    current_correct, mean_correct = 0, 0
+    current_loss, mean_loss = 0, 0
+
+    # バッチごとにループ
+    for labels, id_sequence in dataloader:
+
+        # Feed forward
+        labels, id_sequence = labels.to(DEVICE), id_sequence.to(DEVICE)
+        pred = model(id_sequence)[0]
+
+        # Get loss
+        loss = loss_fn(pred, labels)
+
+        # Get gradient
+        optimizer.zero_grad()
+        loss.backward()
+
+        # Back propagate
+        optimizer.step()
+
+        # Evaluate score with train data
+        labels_pred = pred.argmax(axis=1).squeeze()
+        current_correct += (labels_pred==labels).type(torch.int).sum().item()
+        current_loss += loss.item()
+        current_size += len(labels)
+        mean_correct = current_correct / current_size   # accuracy
+        mean_loss = current_loss / current_size
+
+    return mean_correct, mean_loss
+
+def test(dataloader: DataLoader,
+        model: nn.Module, 
+        loss_fn: Callable) -> Tuple:
+    current_size = 0
+    current_correct, mean_correct = 0, 0
+    current_loss, mean_loss = 0, 0
+
+    with torch.no_grad():
+
+        for labels, texts in dataloader:
+
+            # Feed forward
+            labels, texts = labels.to(DEVICE), texts.to(DEVICE)
+            pred = model(texts)[0]
+
+            # Get loss
+            loss = loss_fn(pred, labels)
+
+            # Evaluate score with test data
+            labels_pred = pred.argmax(axis=1).squeeze()
+            current_correct += (labels_pred==labels).type(torch.int).sum().item()
+            current_loss += loss.item()
+            current_size += len(labels)
+            mean_correct = current_correct / current_size   # accuracy
+            mean_loss = current_loss / current_size
+
+    return mean_correct, mean_loss
+
 def collate_fn(batch):
     labels, id_sequences = list(zip(*batch))
     labels = torch.stack(labels)
@@ -54,4 +123,4 @@ if __name__ == "__main__":
     dataset = LstmLivedoorDataset()
     run(dataset,
         train_batch_size=64, test_batch_size=1024,
-        h_dim=100, lr=1e-1, epoch=100)
+        h_dim=100, lr=1e-1, epoch=30)
